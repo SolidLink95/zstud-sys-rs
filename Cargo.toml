@@ -1,0 +1,20 @@
+[package]
+name = "zstud-sys"
+version = "0.1.3"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/19h/zstud-sys-rs"
+description = "A basic wrapper around zstd"
+readme = "readme.md"
+
+[lib]
+crate-type = ["rlib"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+libc = "0.2.146"
+
+[build-dependencies]
+bindgen = "0.66.0"
+cc = "1.0.79"

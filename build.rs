@@ -18,8 +18,8 @@ fn main() {
     ];
 
     let build = builder
-        .files(src.iter())
-        .flag("-Wno-unused-parameter");
+        .files(src.iter());
+        //.flag("-Wno-unused-parameter");
 
     build.compile("zstd");
 

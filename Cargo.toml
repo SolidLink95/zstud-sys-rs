@@ -13,8 +13,8 @@ crate-type = ["rlib"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-libc = "0.2.146"
+libc = "0.2.169"
 
 [build-dependencies]
 bindgen = "0.71.1"
-cc = "1.0.79"
+cc = "1.2.7"

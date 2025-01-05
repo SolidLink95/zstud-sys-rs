@@ -1,38 +1,32 @@
 use std::env;
 use std::path::PathBuf;
 
-use bindgen::CargoCallbacks;
+// use bindgen;
 
 fn main() {
-    // println!("cargo:rerun-if-changed=tauri.conf.json");
-    // println!("cargo:warning=Debug: checking build.rs execution");
+    // Get the output directory from the environment variable
+    let out_dir = env::var("OUT_DIR").expect("Failed to read OUT_DIR environment variable");
 
-    let out_dir = env::var("OUT_DIR").unwrap();
+    // Generate bindings using bindgen
+    let bindings = bindgen::Builder::default()
+        .header("zstd.c")
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
+        .generate()
+        .expect("Unable to generate bindings");
 
-    let bindings =
-        bindgen::Builder::default()
-			// .clang_args(&["-D__FLT16_SUPPORT=0"])
-            .header("zstd.c")
-            .parse_callbacks(Box::new(CargoCallbacks::new()))
-            .generate()
-            .expect("Unable to generate bindings");
-
+    // Set up the C compiler and build the zstd.c file
     let mut builder = cc::Build::new();
+    let src_files = ["./zstd.c"];
 
-    let src = [
-        "./zstd.c",
-    ];
+    builder
+        .files(src_files.iter())
+        .compile("zstd"); // Compile the C source files
 
-    let build = builder
-        .files(src.iter());
-        //.flag("-Wno-unused-parameter");
-
-    build.compile("zstd");
-
-    let mut output_path = PathBuf::from(out_dir);
-    output_path.push("bindings.rs");
-
+    // Write the generated bindings to the output directory
+    let output_path = PathBuf::from(out_dir).join("bindings.rs");
     bindings
-        .write_to_file(output_path)
-        .expect("Couldn't write bindings!");
+        .write_to_file(&output_path)
+        .expect("Couldn't write bindings to file");
+
+    println!("cargo:rerun-if-changed=zstd.c"); // Re-run if zstd.c changes
 }

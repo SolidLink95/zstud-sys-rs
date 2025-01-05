@@ -1,13 +1,16 @@
 use std::env;
 use std::path::PathBuf;
 
+use bindgen::CargoCallbacks;
+
 fn main() {
     let out_dir = env::var("OUT_DIR").unwrap();
 
     let bindings =
         bindgen::Builder::default()
+			.clang_args(&["-D__FLT16_SUPPORT=0"])
             .header("zstd.c")
-            .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+            .parse_callbacks(Box::new(CargoCallbacks::new()))
             .generate()
             .expect("Unable to generate bindings");
 
